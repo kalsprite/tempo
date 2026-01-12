@@ -20,7 +20,7 @@ tempo generate ./views
 tempo generate ./views -runtime=path/to/runtime  # Custom runtime path
 tempo generate ./views -v                        # Verbose output
 tempo generate file.templ -o=output.odin         # Single file with custom output
-tempo generate file.templ -stdout                # Output to stdout
+tempo generate file.templ -stdout                # Output generated Odin to stdout
 ```
 
 ## Template Syntax
