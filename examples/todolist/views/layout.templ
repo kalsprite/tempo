@@ -1,0 +1,25 @@
+package views
+
+// Layout with named slots - demonstrates slot composition
+layout :: templ(title: string) {
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>{ title }</title>
+
+        // Named slot for head content (styles, scripts)
+        {#slot head}
+    </head>
+    <body>
+        <div class="container">
+            // Default slot for main content
+            {#slot}
+        </div>
+
+        // Named slot for footer scripts
+        {#slot scripts}
+    </body>
+    </html>
+}

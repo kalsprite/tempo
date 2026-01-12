@@ -1,0 +1,66 @@
+package views
+
+import "core:fmt"
+
+// Single todo item - demonstrates:
+// - Conditional classes with templ.classes()
+// - Boolean expression attributes with ?=
+// - Conditional attributes with if { }
+// - Expression interpolation
+todo_item :: templ(todo: Todo) {
+    <li
+        class={ templ.classes(
+            "todo-item",
+            templ.class_if(todo.completed, "completed"),
+            templ.class_if(todo.priority == .High, "priority-high"),
+        ) }
+        data-id={ fmt.tprintf("%d", todo.id) }
+    >
+        // Checkbox with boolean expression attribute
+        <input
+            type="checkbox"
+            class="todo-checkbox"
+            checked?={ todo.completed }
+        />
+
+        <span class="todo-text">{ todo.text }</span>
+
+        // Conditional rendering of priority badge
+        if todo.priority != .Normal {
+            <span class={ templ.classes("badge", priority_class(todo.priority)) }>
+                { priority_label(todo.priority) }
+            </span>
+        }
+
+        // Conditional attribute example
+        <button
+            class="btn-delete"
+            if todo.completed { disabled }
+            title={ todo.completed ? "Cannot delete completed items" : "Delete this todo" }
+        >
+            Delete
+        </button>
+    </li>
+}
+
+// Helper to get priority class
+priority_class :: proc(p: Priority) -> string {
+    switch p {
+    case .Low: return "badge-low"
+    case .Normal: return ""
+    case .High: return "badge-high"
+    case .Urgent: return "badge-urgent"
+    }
+    return ""
+}
+
+// Helper to get priority label
+priority_label :: proc(p: Priority) -> string {
+    switch p {
+    case .Low: return "Low"
+    case .Normal: return "Normal"
+    case .High: return "High"
+    case .Urgent: return "Urgent"
+    }
+    return ""
+}

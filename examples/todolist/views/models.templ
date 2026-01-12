@@ -1,0 +1,44 @@
+package views
+
+// Data models for the todo app
+
+Priority :: enum {
+    Low,
+    Normal,
+    High,
+    Urgent,
+}
+
+Todo :: struct {
+    id:        int,
+    text:      string,
+    completed: bool,
+    priority:  Priority,
+}
+
+Filter :: enum {
+    All,
+    Active,
+    Completed,
+}
+
+// Stats for the todo list
+Todo_Stats :: struct {
+    total:     int,
+    completed: int,
+    active:    int,
+}
+
+// Calculate stats from a list of todos
+calc_stats :: proc(todos: []Todo) -> Todo_Stats {
+    stats: Todo_Stats
+    stats.total = len(todos)
+    for todo in todos {
+        if todo.completed {
+            stats.completed += 1
+        } else {
+            stats.active += 1
+        }
+    }
+    return stats
+}

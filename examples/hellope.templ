@@ -1,0 +1,111 @@
+package views
+
+import "core:fmt"
+
+// Data types
+User :: struct {
+    first_name: string,
+    last_name:  string,
+    email:      string,
+}
+
+// Helper procs
+full_name :: proc(u: User) -> string {
+    return fmt.aprintf("%s %s", u.first_name, u.last_name)
+}
+
+format_email :: proc(u: User) -> string {
+    return fmt.aprintf("%s <%s>", full_name(u), u.email)
+}
+
+// Greeting component
+greeting :: templ(user: User) {
+    <div class="greeting">
+        <h2>Hello, { full_name(user) }!</h2>
+        <p>Contact: { format_email(user) }</p>
+    </div>
+}
+
+// User card component
+user_card :: templ(user: User) {
+    <div class="user-card">
+        <h3>{ user.first_name } { user.last_name }</h3>
+        <a href={ fmt.aprintf("mailto:%s", user.email) }>{ user.email }</a>
+    </div>
+}
+
+// User list
+user_list :: templ(users: []User) {
+    <ul class="user-list">
+        for user in users {
+            <li>
+                @user_card(user)
+            </li>
+        }
+    </ul>
+}
+
+home :: templ(current_user: User, all_users: []User) {
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>Welcome</title>
+            <link rel="stylesheet" href="/styles.css"/>
+        </head>
+        <body>
+            <main>
+                @greeting(current_user)
+                <h2>All Users</h2>
+                @user_list(all_users)
+            </main>
+        </body>
+    </html>
+}
+
+// Layout with slots
+layout :: templ(title: string) {
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>{ title }</title>
+            {#slot head}
+        </head>
+        <body>
+            {#slot}
+        </body>
+    </html>
+}
+
+// Home with layout - tests capture of current_user and all_users
+home_with_layout :: templ(current_user: User, all_users: []User) {
+    @layout("Welcome") {
+        #head {
+            <link rel="stylesheet" href="/styles.css"/>
+        }
+        <main>
+            @greeting(current_user)
+            <h2>All Users</h2>
+            @user_list(all_users)
+        </main>
+    }
+}
+
+// Card wrapper with slot
+card :: templ(title: string) {
+    <div class="card">
+        <h3>{ title }</h3>
+        {#slot}
+    </div>
+}
+
+// Test multiple slot calls - each needs unique Slot_Ctx
+multi_slot_test :: templ(user: User, items: []string) {
+    @card("User Info") {
+        <p>{ user.first_name }</p>
+    }
+    @card("Items") {
+        for item in items {
+            <li>{ item }</li>
+        }
+    }
+}

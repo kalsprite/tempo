@@ -1,0 +1,59 @@
+package views
+
+import "core:fmt"
+
+// CSS component - generates a class name and CSS constant
+// Usage: <div class={ highlight_box() }>
+highlight_box :: css() {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+// CSS with parameters - dynamic styles
+priority_badge :: css(color: string) {
+    background: {{ color }};
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+// Script component - generates a function and JS constant
+// The script body becomes a JS function
+toggle_todo :: script(id: int) {
+    const item = document.querySelector(`[data-id="${id}"]`);
+    if (item) {
+        item.classList.toggle('completed');
+        const checkbox = item.querySelector('.todo-checkbox');
+        if (checkbox) checkbox.checked = !checkbox.checked;
+    }
+    console.log('Toggled todo:', {{ fmt.tprintf("%d", id) }});
+}
+
+// Script for initializing the app
+init_app :: script() {
+    const appName = 'Todo';
+    console.log(`${appName} app initialized!`);
+
+    document.querySelectorAll('.todo-checkbox').forEach((cb, index) => {
+        cb.addEventListener('change', (e) => {
+            const item = e.target.closest('.todo-item');
+            item.classList.toggle('completed', e.target.checked);
+            console.log(`Toggled item ${index}`);
+        });
+    });
+
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (!btn.disabled) {
+                const item = e.target.closest('.todo-item');
+                item.style.opacity = '0';
+                setTimeout(() => item.remove(), 300);
+            }
+        });
+    });
+}
